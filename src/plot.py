@@ -1,4 +1,7 @@
-def plot_and_export(name="model_output"):
+from plotly.subplots import make_subplots
+from plotly import graph_objects as go
+
+def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat_conf_int_1=None, yhat_conf_int_2=None, yhat_conf_int_3=None, yhat_conf_int_75_0=None, yhat_conf_int_75_1=None, yhat_conf_int_75_2=None, yhat_conf_int_75_3=None, name_fig="model_output"):
     fig = make_subplots(rows=4, 
                         cols=1, 
                         vertical_spacing = 0.1,
@@ -435,5 +438,5 @@ def plot_and_export(name="model_output"):
     )
 
 
-    fig.write_image(f"output/{name}.png", engine="kaleido", width=700, height=1100, scale=2)
+    fig.write_image(f"output/{name_fig}.png", engine="kaleido", width=700, height=1100, scale=2)
     #fig.show()
