@@ -43,6 +43,6 @@ def import_and_prepare_data():
     df_dlog_all = df_dlog.copy()
     df_dlog = df_dlog["2020-09-01":]
 
-    df_dlog_lastweek = df_dlog[:-7]
+    df_dlog_lastweek = df_dlog[:-14]
 
     return df_dlog_lastweek, df_dlog, df_dlog_all

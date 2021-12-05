@@ -20,40 +20,37 @@ df_dlog_lastweek, df_dlog, df_dlog_all = import_and_prepare_data()
 # With booster shots, data until previous week
 model_booster_lastweek = VARMAX(df_dlog_lastweek[["new_cases", "incid_hosp", "incid_rea", "incid_dc"]],
                                 exog=df_dlog_lastweek[["vaccination_rappel"]], 
-                                order=(14, 0),
-                                initialization='approximate_diffuse')
+                                order=(14, 0),)
 
 # Without any exog variable, data until previous week
 model_sans_exo_lastweek = VARMAX(df_dlog_lastweek[["new_cases", "incid_hosp", "incid_rea", "incid_dc"]],
-                                 order=(14, 0),
-                                 initialization='approximate_diffuse')
+                                 order=(14, 0),)
 
 # With booster shots, full data
 model_booster = VARMAX(df_dlog[["new_cases", "incid_hosp", "incid_rea", "incid_dc"]],
                        exog=df_dlog[["vaccination_rappel"]], 
-                       order=(14, 0),
-                       initialization='approximate_diffuse')
+                       order=(14, 0),)
 
 # With booster shots, full data
 model_sans_exo = VARMAX(df_dlog[["new_cases", "incid_hosp", "incid_rea", "incid_dc"]],
-                        order=(14, 0),
-                        initialization='approximate_diffuse')
+                        order=(14, 0),)
 
 
-model_booster_lastweek_fit = model_booster_lastweek.fit(disp=False)
+#model_booster_lastweek_fit = model_booster_lastweek.fit(disp=False)
 model_sans_exo_lastweek_fit = model_sans_exo_lastweek.fit(disp=False)
-model_booster_fit = model_booster.fit(disp=False)
-model_sans_exo_fit = model_sans_exo.fit(disp=False)
+#model_booster_fit = model_booster.fit(disp=False)
+#model_sans_exo_fit = model_sans_exo.fit(disp=False)
 
 # Forecast
 def forecast_and_plot():
-    steps = 14
+    steps = 21
     exog_booster=[[df_dlog["vaccination_rappel"].tolist()[-1]]]*steps
     
-    for (model_fit, exog, name_plot) in [(model_booster_lastweek_fit, exog_booster, "model_booster_lastweek_fit"),\
-                                        (model_sans_exo_lastweek_fit, None, "model_sans_exo_lastweek_fit"),\
-                                        (model_booster_fit, exog_booster, "model_booster_fit"),\
-                                        (model_sans_exo_fit, None, "model_sans_exo_fit")\
+    for (model_fit, exog, name_plot) in [\
+                                            #(model_booster_lastweek_fit, exog_booster, "model_booster_lastweek_fit"),\
+                                            (model_sans_exo_lastweek_fit, None, "model_sans_exo_lastweek_fit"),\
+                                            #(model_booster_fit, exog_booster, "model_booster_fit"),\
+                                            #(model_sans_exo_fit, None, "model_sans_exo_fit"),\
                                         ]:
     
         yhat = model_fit.get_forecast(steps=steps, exog=exog)
