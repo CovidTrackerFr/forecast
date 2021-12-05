@@ -1,11 +1,11 @@
 from plotly.subplots import make_subplots
 from plotly import graph_objects as go
 
-def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat_conf_int_1=None, yhat_conf_int_2=None, yhat_conf_int_3=None, yhat_conf_int_75_0=None, yhat_conf_int_75_1=None, yhat_conf_int_75_2=None, yhat_conf_int_75_3=None, name_fig="model_output"):
-    fig = make_subplots(rows=4, 
+def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat_conf_int_1=None, yhat_conf_int_2=None, yhat_conf_int_3=None, yhat_conf_int_4=None, yhat_conf_int_5=None, yhat_conf_int_75_0=None, yhat_conf_int_75_1=None, yhat_conf_int_75_2=None, yhat_conf_int_75_3=None, yhat_conf_int_75_4=None, yhat_conf_int_75_5=None, name_fig="model_output"):
+    fig = make_subplots(rows=6, 
                         cols=1, 
                         vertical_spacing = 0.1,
-                        subplot_titles=("<b>New cases</b>", "<b>Hospital admissions</b>", "<b>Intensive Care Unit admissions</b>", "<b>Deaths</b>"))
+                        subplot_titles=("<b>New cases</b>", "<b>Hospital admissions</b>", "<b>Intensive Care Unit admissions</b>", "<b>Hosp beds</b>", "<b>ICU beds</b>", "<b>Deaths</b>"))
 
 
     fig.add_trace(
@@ -258,6 +258,180 @@ def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat
         go.Scatter(
             x=df_dlog_all.index,
             y=10**df_dlog_all["incid_rea"],
+            marker_color="black",
+            mode="lines",
+            name="ICU admissions",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+    ###
+    # Lits hosp
+
+    fig.add_trace(
+        go.Scatter(
+            x=yhat_conf_int_75_4.index,
+            y=10**yhat_conf_int_75_4["mean_ci_lower"],
+            line_width=0,
+            mode="lines",
+            name="ICU admissions [predicted]",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=yhat_conf_int_75_4.index,
+            y=10**yhat_conf_int_75_4["mean_ci_upper"],
+            line_width=0,
+            fill="tonexty",
+            fillcolor="rgba(107, 192, 250, 0.8)",
+            mode="lines",
+            name="ICU admissions [predicted]",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+
+    fig.add_trace(
+        go.Scatter(
+            x=yhat_conf_int_4.index,
+            y=10**yhat_conf_int_4["mean_ci_lower"],
+            line_width=0,
+            mode="lines",
+            name="ICU admissions [predicted]",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=yhat_conf_int_4.index,
+            y=10**yhat_conf_int_4["mean_ci_upper"],
+            line_width=0,
+            fill="tonexty",
+            fillcolor="rgba(107, 192, 250, 0.4)",
+            mode="lines",
+            name="ICU admissions [predicted]",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=yhat_mean.index,
+            y=10**yhat_mean["hosp"],
+            marker=dict(color="rgba(40, 157, 237, 1)"),
+            line=dict(dash='dot'),
+            mode="lines",
+            name="ICU admissions [predicted]",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=df_dlog_all.index,
+            y=10**df_dlog_all["hosp"],
+            marker_color="black",
+            mode="lines",
+            name="ICU admissions",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+    ###
+    # Lits rea
+
+    fig.add_trace(
+        go.Scatter(
+            x=yhat_conf_int_75_5.index,
+            y=10**yhat_conf_int_75_5["mean_ci_lower"],
+            line_width=0,
+            mode="lines",
+            name="ICU admissions [predicted]",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=yhat_conf_int_75_5.index,
+            y=10**yhat_conf_int_75_5["mean_ci_upper"],
+            line_width=0,
+            fill="tonexty",
+            fillcolor="rgba(107, 192, 250, 0.8)",
+            mode="lines",
+            name="ICU admissions [predicted]",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+
+    fig.add_trace(
+        go.Scatter(
+            x=yhat_conf_int_5.index,
+            y=10**yhat_conf_int_5["mean_ci_lower"],
+            line_width=0,
+            mode="lines",
+            name="ICU admissions [predicted]",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=yhat_conf_int_5.index,
+            y=10**yhat_conf_int_5["mean_ci_upper"],
+            line_width=0,
+            fill="tonexty",
+            fillcolor="rgba(107, 192, 250, 0.4)",
+            mode="lines",
+            name="ICU admissions [predicted]",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=yhat_mean.index,
+            y=10**yhat_mean["rea"],
+            marker=dict(color="rgba(40, 157, 237, 1)"),
+            line=dict(dash='dot'),
+            mode="lines",
+            name="ICU admissions [predicted]",
+            showlegend=False
+        ),
+        row=3,
+        col=1
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=df_dlog_all.index,
+            y=10**df_dlog_all["rea"],
             marker_color="black",
             mode="lines",
             name="ICU admissions",

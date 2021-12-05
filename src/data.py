@@ -24,6 +24,12 @@ def import_and_prepare_data():
     df_admissions.index = pd.to_datetime(df_admissions["jour"])
     df_admissions = df_admissions[["incid_hosp", "incid_rea", "incid_dc"]]
 
+    # Import hospital, ICU admissions and deaths data
+    df_hospital = pd.read_csv("https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7", sep=";")
+    df_hospital = df_hospital.groupby("jour").sum().reset_index()
+    df_hospital.index = pd.to_datetime(df_hospital["jour"])
+    df_hospital = df_hospital[["hosp", "rea"]]
+
     # Import data vaccination
     df_vaccination = pd.read_csv("https://www.data.gouv.fr/fr/datasets/r/fa4ad329-14ec-4394-85a4-c5df33769dff", sep=";")
     df_vaccination.index = pd.to_datetime(df_vaccination["jour"])
@@ -34,6 +40,7 @@ def import_and_prepare_data():
     # Data merge
     df_dlog = df_new_cases.merge(df_admissions, left_on="jour", right_on="jour")
     df_dlog = df_dlog.merge(df_vaccination, left_on="jour", right_on="jour").fillna(0)
+    df_dlog = df_dlog.merge(df_hospital, left_on="jour", right_on="jour").fillna(0)
     df_dlog[df_dlog.columns] = df_dlog[df_dlog.columns].rolling(window=7).mean()
 
     # dlog compute
@@ -43,6 +50,6 @@ def import_and_prepare_data():
     df_dlog_all = df_dlog.copy()
     df_dlog = df_dlog["2020-09-01":]
 
-    df_dlog_lastweek = df_dlog[:-14]
+    df_dlog_lastweek = df_dlog[:-7]
 
     return df_dlog_lastweek, df_dlog, df_dlog_all
