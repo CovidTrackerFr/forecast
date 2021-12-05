@@ -51,17 +51,17 @@ def forecast_and_plot():
     steps = 14
 
     for (model_fit, exog, name_plot) in [(model_booster_lastweek_fit, exog_booster, "model_booster_lastweek_fit"),\
-                              (model_sans_exo_lastweek_fit, None, "model_sans_exo_lastweek_fit"),\
-                              (model_booster_fit, exog_booster, "model_booster_fit"),\
-                              (model_sans_exo_fit, None, "model_sans_exo_fit")\
-                              ]
+                                        (model_sans_exo_lastweek_fit, None, "model_sans_exo_lastweek_fit"),\
+                                        (model_booster_fit, exog_booster, "model_booster_fit"),\
+                                        (model_sans_exo_fit, None, "model_sans_exo_fit")\
+                                        ]:
     
-    yhat = model_fit.get_forecast(steps=steps, exog=exog)
-    yhat_mean = yhat.predicted_mean
+        yhat = model_fit.get_forecast(steps=steps, exog=exog)
+        yhat_mean = yhat.predicted_mean
 
-    # Confidence intervals
-    yhat_conf_int_0, yhat_conf_int_1, yhat_conf_int_2, yhat_conf_int_3 = yhat.summary_frame(endog=0, alpha=0.02), yhat.summary_frame(endog=1, alpha=0.02), yhat.summary_frame(endog=2, alpha=0.02), yhat.summary_frame(endog=3, alpha=0.02)
-    yhat_conf_int_75_0, yhat_conf_int_75_1, yhat_conf_int_75_2, yhat_conf_int_75_3 = yhat.summary_frame(endog=0, alpha=0.25), yhat.summary_frame(endog=1, alpha=0.25), yhat.summary_frame(endog=2, alpha=0.25), yhat.summary_frame(endog=3, alpha=0.25)
+        # Confidence intervals
+        yhat_conf_int_0, yhat_conf_int_1, yhat_conf_int_2, yhat_conf_int_3 = yhat.summary_frame(endog=0, alpha=0.02), yhat.summary_frame(endog=1, alpha=0.02), yhat.summary_frame(endog=2, alpha=0.02), yhat.summary_frame(endog=3, alpha=0.02)
+        yhat_conf_int_75_0, yhat_conf_int_75_1, yhat_conf_int_75_2, yhat_conf_int_75_3 = yhat.summary_frame(endog=0, alpha=0.25), yhat.summary_frame(endog=1, alpha=0.25), yhat.summary_frame(endog=2, alpha=0.25), yhat.summary_frame(endog=3, alpha=0.25)
 
-    # Plot
-    plot_and_export(name=name_plot, df_dlog_all, yhat_mean, yhat_conf_int_0, yhat_conf_int_1, yhat_conf_int_2, yhat_conf_int_3, yhat_conf_int_75_0, yhat_conf_int_75_1, yhat_conf_int_75_2, yhat_conf_int_75_3)
+        # Plot
+        plot_and_export(df_dlog_all, yhat_mean, yhat_conf_int_0, yhat_conf_int_1, yhat_conf_int_2, yhat_conf_int_3, yhat_conf_int_75_0, yhat_conf_int_75_1, yhat_conf_int_75_2, yhat_conf_int_75_3, name=name_plot, )
