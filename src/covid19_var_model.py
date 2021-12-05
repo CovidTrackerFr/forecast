@@ -47,9 +47,9 @@ model_sans_exo_fit = model_sans_exo.fit(disp=False)
 
 # Forecast
 def forecast_and_plot():
-    exog_booster=[[df_dlog["vaccination_rappel"].tolist()[-1]]]*steps
     steps = 14
-
+    exog_booster=[[df_dlog["vaccination_rappel"].tolist()[-1]]]*steps
+    
     for (model_fit, exog, name_plot) in [(model_booster_lastweek_fit, exog_booster, "model_booster_lastweek_fit"),\
                                         (model_sans_exo_lastweek_fit, None, "model_sans_exo_lastweek_fit"),\
                                         (model_booster_fit, exog_booster, "model_booster_fit"),\
