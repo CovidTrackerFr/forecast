@@ -531,7 +531,7 @@ def plot_and_export():
     )
 
 
-    fig.write_image(PATH + "model_output.png", engine="kaleido", width=700, height=1100, scale=2)
+    fig.write_image("model_output.png", engine="kaleido", width=700, height=1100, scale=2)
     #fig.show()
 
 plot_and_export()
