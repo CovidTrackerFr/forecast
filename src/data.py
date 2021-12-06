@@ -26,6 +26,7 @@ def import_and_prepare_data():
 
     # Import hospital, ICU admissions and deaths data
     df_hospital = pd.read_csv("https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7", sep=";")
+    df_hospital = df_hospital[df_hospital["sexe"]==0]
     df_hospital = df_hospital.groupby("jour").sum().reset_index()
     df_hospital.index = pd.to_datetime(df_hospital["jour"])
     df_hospital = df_hospital[["hosp", "rea"]]
@@ -47,9 +48,11 @@ def import_and_prepare_data():
     df_dlog = np.log10(df_dlog)
     df_dlog.replace([np.inf, -np.inf], 0, inplace=True)
     df_dlog = df_dlog.dropna()
+    df_dlog[df_dlog.columns] = (df_dlog[df_dlog.columns] - df_dlog[df_dlog.columns].shift(1)).dropna()
+
     df_dlog_all = df_dlog.copy()
     df_dlog = df_dlog["2020-09-01":]
 
-    df_dlog_lastweek = df_dlog[:-7]
+    df_dlog_lastweek = df_dlog[:-14]
 
     return df_dlog_lastweek, df_dlog, df_dlog_all

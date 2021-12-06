@@ -18,38 +18,39 @@ df_dlog_lastweek, df_dlog, df_dlog_all = import_and_prepare_data()
 ### Model definition
 
 # With booster shots, data until previous week
-model_booster_lastweek = VARMAX(df_dlog_lastweek[["new_cases", "incid_hosp", "incid_rea", "incid_dc", "rea", "hosp"]],
+model_booster_lastweek = VARMAX(df_dlog_lastweek[["new_cases", "hosp", "rea", "incid_dc"]],
                                 exog=df_dlog_lastweek[["vaccination_rappel"]], 
-                                order=(14, 0), initialization='approximate_diffuse')
+                                order=(14, 0),)
 
 # Without any exog variable, data until previous week
 model_sans_exo_lastweek = VARMAX(df_dlog_lastweek[["new_cases", "incid_hosp", "incid_rea", "incid_dc"]],
                                  order=(14, 0),)
 
 # With booster shots, full data
-model_booster = VARMAX(df_dlog[["new_cases", "incid_hosp", "incid_rea", "incid_dc", "rea", "hosp"]],
+model_booster = VARMAX(df_dlog[["new_cases", "hosp", "rea", "incid_dc"]],
                        exog=df_dlog[["vaccination_rappel"]], 
-                       order=(14, 0), initialization='approximate_diffuse')
+                       order=(14, 0))
 
 # With booster shots, full data
 model_sans_exo = VARMAX(df_dlog[["new_cases", "incid_hosp", "incid_rea", "incid_dc"]],
                         order=(14, 0), initialization='approximate_diffuse')
 
 
-model_booster_lastweek_fit = model_booster_lastweek.fit(disp=False)
-#model_sans_exo_lastweek_fit = model_sans_exo_lastweek.fit(disp=False)
-model_booster_fit = model_booster.fit(disp=False)
+model_booster_lastweek_fit = model_booster_lastweek.fit(disp=False, method="powell")
+model_booster_fit = model_booster.fit(disp=False, method="powell")
 #model_sans_exo_fit = model_sans_exo.fit(disp=False)
+
+#maxiter=200
 
 # Forecast
 def forecast_and_plot():
-    steps = 21
+    steps = 49
     exog_booster=[[df_dlog["vaccination_rappel"].tolist()[-1]]]*steps
     
     for (model_fit, exog, name_plot) in [\
                                             (model_booster_lastweek_fit, exog_booster, "model_booster_lastweek_fit"),\
                                             #(model_sans_exo_lastweek_fit, None, "model_sans_exo_lastweek_fit"),\
-                                            (model_booster_fit, exog_booster, "model_booster_fit"),\
+                                            #(model_booster_fit, exog_booster, "model_booster_fit"),\
                                             #(model_sans_exo_fit, None, "model_sans_exo_fit"),\
                                         ]:
     
@@ -57,10 +58,10 @@ def forecast_and_plot():
         yhat_mean = yhat.predicted_mean
 
         # Confidence intervals
-        yhat_conf_int_0, yhat_conf_int_1, yhat_conf_int_2, yhat_conf_int_3, yhat_conf_int_4, yhat_conf_int_5  = yhat.summary_frame(endog=0, alpha=0.02), yhat.summary_frame(endog=1, alpha=0.02), yhat.summary_frame(endog=2, alpha=0.02), yhat.summary_frame(endog=3, alpha=0.02), yhat.summary_frame(endog=4, alpha=0.02), yhat.summary_frame(endog=5, alpha=0.02)
-        yhat_conf_int_75_0, yhat_conf_int_75_1, yhat_conf_int_75_2, yhat_conf_int_75_3, yhat_conf_int_75_4, yhat_conf_int_75_5 = yhat.summary_frame(endog=0, alpha=0.25), yhat.summary_frame(endog=1, alpha=0.25), yhat.summary_frame(endog=2, alpha=0.25), yhat.summary_frame(endog=3, alpha=0.25), yhat.summary_frame(endog=4, alpha=0.25), yhat.summary_frame(endog=5, alpha=0.25)
+        yhat_conf_int_0, yhat_conf_int_1, yhat_conf_int_2, yhat_conf_int_3  = yhat.summary_frame(endog=0, alpha=0.02), yhat.summary_frame(endog=1, alpha=0.02), yhat.summary_frame(endog=2, alpha=0.02), yhat.summary_frame(endog=3, alpha=0.02)
+        yhat_conf_int_75_0, yhat_conf_int_75_1, yhat_conf_int_75_2, yhat_conf_int_75_3 = yhat.summary_frame(endog=0, alpha=0.25), yhat.summary_frame(endog=1, alpha=0.25), yhat.summary_frame(endog=2, alpha=0.25), yhat.summary_frame(endog=3, alpha=0.25)
 
         # Plot
-        plot_and_export(df_dlog_all=df_dlog_all, yhat_mean=yhat_mean, yhat_conf_int_0=yhat_conf_int_0, yhat_conf_int_1=yhat_conf_int_1, yhat_conf_int_2=yhat_conf_int_2, yhat_conf_int_3=yhat_conf_int_3, yhat_conf_int_4=yhat_conf_int_4, yhat_conf_int_5=yhat_conf_int_5, yhat_conf_int_75_0=yhat_conf_int_75_0, yhat_conf_int_75_1=yhat_conf_int_75_1, yhat_conf_int_75_2=yhat_conf_int_75_2, yhat_conf_int_75_3=yhat_conf_int_75_3, yhat_conf_int_75_4=yhat_conf_int_75_4, yhat_conf_int_75_5=yhat_conf_int_75_5, name_fig=name_plot)
+        plot_and_export(df_dlog_all=df_dlog_all, yhat_mean=yhat_mean, yhat_conf_int_0=yhat_conf_int_0, yhat_conf_int_1=yhat_conf_int_1, yhat_conf_int_2=yhat_conf_int_2, yhat_conf_int_3=yhat_conf_int_3, yhat_conf_int_75_0=yhat_conf_int_75_0, yhat_conf_int_75_1=yhat_conf_int_75_1, yhat_conf_int_75_2=yhat_conf_int_75_2, yhat_conf_int_75_3=yhat_conf_int_75_3, name_fig=name_plot)
 
 forecast_and_plot()
