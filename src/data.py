@@ -39,20 +39,22 @@ def import_and_prepare_data():
     df_vaccination = df_vaccination[["vaccination", "vaccination_rappel"]].fillna(0)
 
     # Data merge
-    df_dlog = df_new_cases.merge(df_admissions, left_on="jour", right_on="jour")
-    df_dlog = df_dlog.merge(df_vaccination, left_on="jour", right_on="jour").fillna(0)
-    df_dlog = df_dlog.merge(df_hospital, left_on="jour", right_on="jour").fillna(0)
-    df_dlog[df_dlog.columns] = df_dlog[df_dlog.columns].rolling(window=7).mean()
+    df = df_new_cases.merge(df_admissions, left_on="jour", right_on="jour")
+    df = df.merge(df_vaccination, left_on="jour", right_on="jour").fillna(0)
+    df = df.merge(df_hospital, left_on="jour", right_on="jour").fillna(0)
+    df[df.columns] = df[df.columns].rolling(window=7).mean()
 
     # dlog compute
-    df_dlog = np.log10(df_dlog)
-    df_dlog.replace([np.inf, -np.inf], 0, inplace=True)
-    df_dlog = df_dlog.dropna()
+    df_dlog = np.log10(df)
     df_dlog[df_dlog.columns] = (df_dlog[df_dlog.columns] - df_dlog[df_dlog.columns].shift(1)).dropna()
+    df_dlog = df_dlog.dropna()
+    df_dlog.replace([np.inf, -np.inf], 0, inplace=True)
 
     df_dlog_all = df_dlog.copy()
+
+    df = df["2020-09-01":]
     df_dlog = df_dlog["2020-09-01":]
 
-    df_dlog_lastweek = df_dlog[:-14]
+    df_dlog_lastweek = df_dlog[:-7]
 
-    return df_dlog_lastweek, df_dlog, df_dlog_all
+    return df_dlog_lastweek, df_dlog, df_dlog_all, df.dropna()

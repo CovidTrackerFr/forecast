@@ -1,8 +1,10 @@
 from plotly.subplots import make_subplots
 from plotly import graph_objects as go
 from plotly import offline
+import numpy as np
 
-def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat_conf_int_1=None, yhat_conf_int_2=None, yhat_conf_int_3=None, yhat_conf_int_75_0=None, yhat_conf_int_75_1=None, yhat_conf_int_75_2=None, yhat_conf_int_75_3=None, name_fig="model_output"):
+def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat_conf_int_1=None, yhat_conf_int_2=None, yhat_conf_int_3=None, yhat_conf_int_75_0=None, yhat_conf_int_75_1=None, yhat_conf_int_75_2=None, yhat_conf_int_75_3=None, name_fig="model_output"):
+    print(df)
     fig = make_subplots(rows=4, 
                         cols=1, 
                         vertical_spacing = 0.1,
@@ -69,7 +71,7 @@ def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat
     fig.add_trace(
         go.Scatter(
             x=yhat_mean.index,
-            y=10**yhat_mean["new_cases"],
+            y=10**(np.log10(df["new_cases"].values[-1]) + yhat_mean["new_cases"].cumsum()),
             mode="lines",
             marker=dict(color="rgba(40, 157, 237, 1)"),
             line=dict(dash='dot'),
@@ -83,7 +85,7 @@ def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat
     fig.add_trace(
         go.Scatter(
             x=df_dlog_all.index,
-            y=10**df_dlog_all["new_cases"],
+            y=10**(np.log10(df["new_cases"].values[0]) + df_dlog_all["new_cases"].cumsum()),
             marker_color="black",
             mode="lines",
             name="New cases",
@@ -99,7 +101,7 @@ def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_75_1.index,
-            y=10**yhat_conf_int_75_1["mean_ci_lower"],
+            y=yhat_conf_int_75_1["mean_ci_lower"],
             line_width=0,
             mode="lines",
             name="New cases [predicted]",
@@ -112,7 +114,7 @@ def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_75_1.index,
-            y=10**yhat_conf_int_75_1["mean_ci_upper"],
+            y=yhat_conf_int_75_1["mean_ci_upper"],
             line_width=0,
             fill="tonexty",
             fillcolor="rgba(107, 192, 250, 0.8)",
@@ -127,7 +129,7 @@ def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_1.index,
-            y=10**yhat_conf_int_1["mean_ci_lower"],
+            y=yhat_conf_int_1["mean_ci_lower"],
             marker_color="blue",
             line_width=0,
             mode="lines",
@@ -141,7 +143,7 @@ def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_1.index,
-            y=10**yhat_conf_int_1["mean_ci_upper"],
+            y=yhat_conf_int_1["mean_ci_upper"],
             marker_color="blue",
             line_width=0,
             fill="tonexty",
@@ -157,7 +159,7 @@ def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat
     fig.add_trace(
         go.Scatter(
             x=yhat_mean.index,
-            y=10**yhat_mean["hosp"],
+            y=10**(np.log10(df["hosp"].values[-1]) + yhat_mean["hosp"].cumsum()),
             mode="lines",
             marker=dict(color="rgba(40, 157, 237, 1)"),
             line=dict(dash='dot'),
@@ -171,7 +173,7 @@ def plot_and_export(df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat
     fig.add_trace(
         go.Scatter(
             x=df_dlog_all.index,
-            y=10**df_dlog_all["hosp"],
+            y=10**(np.log10(df["hosp"].values[0]) + df_dlog_all["hosp"].cumsum()),
             marker_color="black",
             mode="lines",
             name="Hospital admissions",
