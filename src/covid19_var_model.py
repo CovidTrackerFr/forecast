@@ -38,11 +38,11 @@ model_sans_exo = VARMAX(df_dlog[["new_cases", "incid_hosp", "incid_rea", "incid_
 
 
 #model_booster_lastweek_fit = model_booster_lastweek.fit(disp=False, method="powell")
-#model_booster_fit = model_booster.fit(disp=False, method="powell")
+model_booster_fit = model_booster.fit(disp=False, method="powell")
 #model_sans_exo_fit = model_sans_exo.fit(disp=False)
 
-#model_booster_fit.save("output/model_booster_lastweek_fit")
-model_booster_fit = sm.load("output/model_booster_lastweek_fit")
+model_booster_fit.save("output/model_booster_lastweek_fit")
+#model_booster_fit = sm.load("output/model_booster_lastweek_fit")
 
 # Forecast
 def forecast_and_plot():
