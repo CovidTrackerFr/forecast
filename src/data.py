@@ -40,19 +40,19 @@ def import_and_prepare_data():
 
     # Data merge
     df = df_new_cases.merge(df_admissions, left_on="jour", right_on="jour")
-    df = df.merge(df_vaccination, left_on="jour", right_on="jour").fillna(0)
-    df = df.merge(df_hospital, left_on="jour", right_on="jour").fillna(0)
+    df = df.merge(df_vaccination, left_on="jour", right_on="jour", how="left").fillna(0)
+    df = df.merge(df_hospital, left_on="jour", right_on="jour", how="left").fillna(0)
     df[df.columns] = df[df.columns].rolling(window=7).mean()
 
     # dlog compute
     df_dlog = np.log10(df)
-    df_dlog[df_dlog.columns] = (df_dlog[df_dlog.columns] - df_dlog[df_dlog.columns].shift(1)).dropna()
-    df_dlog = df_dlog.dropna()
+    df_dlog[df_dlog.columns] = (df_dlog[df_dlog.columns] - df_dlog[df_dlog.columns].shift(1))
+    df_dlog = df_dlog.fillna(0)
     df_dlog.replace([np.inf, -np.inf], 0, inplace=True)
 
     df_dlog_all = df_dlog.copy()
 
-    df = df["2020-09-01":]
+    df = df[:]
     df_dlog = df_dlog["2020-09-01":]
 
     df_dlog_lastweek = df_dlog[:-7]

@@ -3,18 +3,16 @@ from plotly import graph_objects as go
 from plotly import offline
 import numpy as np
 
-def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat_conf_int_1=None, yhat_conf_int_2=None, yhat_conf_int_3=None, yhat_conf_int_75_0=None, yhat_conf_int_75_1=None, yhat_conf_int_75_2=None, yhat_conf_int_75_3=None, name_fig="model_output"):
-    print(df)
+def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat_conf_int_1=None, yhat_conf_int_2=None, yhat_conf_int_3=None, yhat_conf_int_75_0=None, yhat_conf_int_75_1=None, yhat_conf_int_75_2=None, yhat_conf_int_75_3=None, name_fig="model_output", delai_dernier_jour=0):
     fig = make_subplots(rows=4, 
                         cols=1, 
                         vertical_spacing = 0.1,
                         subplot_titles=("<b>New cases</b>", "<b>Hospital beds</b>", "<b>Intensive Care Unit beds</b>", "<b>Deaths</b>"))
 
-
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_75_0.index,
-            y=10**yhat_conf_int_75_0["mean_ci_lower"],
+            y=10**(np.log10(df["new_cases"].values[-1-delai_dernier_jour]) + yhat_conf_int_75_0["mean_ci_lower"].cumsum()),
             line_width=0,
             mode="lines",
             name="New cases [predicted]",
@@ -27,7 +25,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_75_0.index,
-            y=10**yhat_conf_int_75_0["mean_ci_upper"],
+            y=10**(np.log10(df["new_cases"].values[-1-delai_dernier_jour]) + yhat_conf_int_75_0["mean_ci_upper"].cumsum()),
             line_width=0,
             fill="tonexty",
             fillcolor="rgba(107, 192, 250, 0.8)",
@@ -43,7 +41,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_0.index,
-            y=10**yhat_conf_int_0["mean_ci_lower"],
+            y=10**(np.log10(df["new_cases"].values[-1-delai_dernier_jour]) + yhat_conf_int_0["mean_ci_lower"].cumsum()),
             line_width=0,
             mode="lines",
             name="New cases [predicted]",
@@ -56,7 +54,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_0.index,
-            y=10**yhat_conf_int_0["mean_ci_upper"],
+            y=10**(np.log10(df["new_cases"].values[-1-delai_dernier_jour]) + yhat_conf_int_0["mean_ci_upper"].cumsum()),
             line_width=0,
             fill="tonexty",
             fillcolor="rgba(107, 192, 250, 0.4)",
@@ -71,7 +69,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_mean.index,
-            y=10**(np.log10(df["new_cases"].values[-1]) + yhat_mean["new_cases"].cumsum()),
+            y=10**(np.log10(df["new_cases"].values[-1-delai_dernier_jour]) + yhat_mean["new_cases"].cumsum()),
             mode="lines",
             marker=dict(color="rgba(40, 157, 237, 1)"),
             line=dict(dash='dot'),
@@ -81,7 +79,6 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
         row=1,
         col=1
     )
-
     fig.add_trace(
         go.Scatter(
             x=df_dlog_all.index,
@@ -101,7 +98,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_75_1.index,
-            y=yhat_conf_int_75_1["mean_ci_lower"],
+            y=10**(np.log10(df["hosp"].values[-1-delai_dernier_jour]) + yhat_conf_int_75_1["mean_ci_lower"].cumsum()),
             line_width=0,
             mode="lines",
             name="New cases [predicted]",
@@ -114,7 +111,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_75_1.index,
-            y=yhat_conf_int_75_1["mean_ci_upper"],
+            y=10**(np.log10(df["hosp"].values[-1-delai_dernier_jour]) + yhat_conf_int_75_1["mean_ci_upper"].cumsum()),
             line_width=0,
             fill="tonexty",
             fillcolor="rgba(107, 192, 250, 0.8)",
@@ -129,7 +126,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_1.index,
-            y=yhat_conf_int_1["mean_ci_lower"],
+            y=10**(np.log10(df["hosp"].values[-1-delai_dernier_jour]) + yhat_conf_int_1["mean_ci_lower"].cumsum()),
             marker_color="blue",
             line_width=0,
             mode="lines",
@@ -143,7 +140,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_1.index,
-            y=yhat_conf_int_1["mean_ci_upper"],
+            y=10**(np.log10(df["hosp"].values[-1-delai_dernier_jour]) + yhat_conf_int_1["mean_ci_upper"].cumsum()),
             marker_color="blue",
             line_width=0,
             fill="tonexty",
@@ -159,7 +156,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_mean.index,
-            y=10**(np.log10(df["hosp"].values[-1]) + yhat_mean["hosp"].cumsum()),
+            y=10**(np.log10(df["hosp"].values[-1-delai_dernier_jour]) + yhat_mean["hosp"].cumsum()),
             mode="lines",
             marker=dict(color="rgba(40, 157, 237, 1)"),
             line=dict(dash='dot'),
@@ -189,7 +186,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_75_2.index,
-            y=10**yhat_conf_int_75_2["mean_ci_lower"],
+            y=10**(np.log10(df["rea"].values[-1-delai_dernier_jour]) + yhat_conf_int_75_2["mean_ci_lower"].cumsum()),
             line_width=0,
             mode="lines",
             name="ICU admissions [predicted]",
@@ -202,7 +199,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_75_2.index,
-            y=10**yhat_conf_int_75_2["mean_ci_upper"],
+            y=10**(np.log10(df["rea"].values[-1-delai_dernier_jour]) + yhat_conf_int_75_2["mean_ci_upper"].cumsum()),
             line_width=0,
             fill="tonexty",
             fillcolor="rgba(107, 192, 250, 0.8)",
@@ -218,7 +215,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_2.index,
-            y=10**yhat_conf_int_2["mean_ci_lower"],
+            y=10**(np.log10(df["rea"].values[-1-delai_dernier_jour]) + yhat_conf_int_2["mean_ci_lower"].cumsum()),
             line_width=0,
             mode="lines",
             name="ICU admissions [predicted]",
@@ -231,7 +228,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_2.index,
-            y=10**yhat_conf_int_2["mean_ci_upper"],
+            y=10**(np.log10(df["rea"].values[-1-delai_dernier_jour]) + yhat_conf_int_2["mean_ci_upper"].cumsum()),
             line_width=0,
             fill="tonexty",
             fillcolor="rgba(107, 192, 250, 0.4)",
@@ -246,7 +243,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_mean.index,
-            y=10**yhat_mean["rea"],
+            y=10**(np.log10(df["rea"].values[-1-delai_dernier_jour]) + yhat_mean["rea"].cumsum()),
             marker=dict(color="rgba(40, 157, 237, 1)"),
             line=dict(dash='dot'),
             mode="lines",
@@ -260,7 +257,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=df_dlog_all.index,
-            y=10**df_dlog_all["rea"],
+            y=10**(np.log10(df["rea"].values[0]) + df_dlog_all["rea"].cumsum()),
             marker_color="black",
             mode="lines",
             name="ICU admissions",
@@ -275,7 +272,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_75_3.index,
-            y=10**yhat_conf_int_75_3["mean_ci_lower"],
+            y=10**(np.log10(df["incid_dc"].values[-1-delai_dernier_jour]) + yhat_conf_int_75_3["mean_ci_lower"].cumsum()),
             line_width=0,
             mode="lines",
             name="Deaths [predicted]",
@@ -288,7 +285,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_75_3.index,
-            y=10**yhat_conf_int_75_3["mean_ci_upper"],
+            y=10**(np.log10(df["incid_dc"].values[-1-delai_dernier_jour]) + yhat_conf_int_75_3["mean_ci_upper"].cumsum()),
             line_width=0,
             fill="tonexty",
             fillcolor="rgba(107, 192, 250, 0.8)",
@@ -303,7 +300,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_3.index,
-            y=10**yhat_conf_int_3["mean_ci_lower"],
+            y=10**(np.log10(df["incid_dc"].values[-1-delai_dernier_jour]) + yhat_conf_int_3["mean_ci_lower"].cumsum()),
             line_width=0,
             mode="lines",
             name="Deaths [predicted]",
@@ -316,7 +313,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_conf_int_3.index,
-            y=10**yhat_conf_int_3["mean_ci_upper"],
+            y=10**(np.log10(df["incid_dc"].values[-1-delai_dernier_jour]) + yhat_conf_int_3["mean_ci_upper"].cumsum()),
             line_width=0,
             fill="tonexty",
             fillcolor="rgba(107, 192, 250, 0.4)",
@@ -331,7 +328,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=yhat_mean.index,
-            y=10**yhat_mean["incid_dc"],
+            y=10**(np.log10(df["incid_dc"].values[-1-delai_dernier_jour]) + yhat_mean["incid_dc"].cumsum()),
             marker=dict(color="rgba(40, 157, 237, 1)"),
             line=dict(dash='dot'),
             mode="lines",
@@ -345,7 +342,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     fig.add_trace(
         go.Scatter(
             x=df_dlog_all.index,
-            y=10**df_dlog_all["incid_dc"],
+            y=10**(np.log10(df["incid_dc"].values[0]) + df_dlog_all["incid_dc"].cumsum()),
             marker_color="black",
             mode="lines",
             name="Deaths",
@@ -356,7 +353,7 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
     )
 
     fig.update_xaxes(range=[df_dlog_all.index[-80], yhat_mean.index[-1]])
-    fig.update_yaxes(autorange = True, fixedrange= False)
+    fig.update_yaxes(autorange = True)
 
     fig.add_annotation(
         x=0.5,

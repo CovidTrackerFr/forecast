@@ -37,22 +37,23 @@ model_sans_exo = VARMAX(df_dlog[["new_cases", "incid_hosp", "incid_rea", "incid_
                         order=(14, 0), initialization='approximate_diffuse')
 
 
-#model_booster_lastweek_fit = model_booster_lastweek.fit(disp=False, method="powell")
-model_booster_fit = model_booster.fit(disp=False, method="powell")
+# Fit
+model_booster_lastweek_fit = model_booster_lastweek.fit(disp=False)
+model_booster_fit = model_booster.fit(disp=False, ) #method="powell"
 #model_sans_exo_fit = model_sans_exo.fit(disp=False)
 
-model_booster_fit.save("output/model_booster_lastweek_fit")
-#model_booster_fit = sm.load("output/model_booster_lastweek_fit")
+#model_booster_fit.save("output/model_booster_fit")
+#model_booster_fit = sm.load("output/model_booster_fit")
 
 # Forecast
 def forecast_and_plot():
-    steps = 49
+    steps = 14
     exog_booster=[[df_dlog["vaccination_rappel"].tolist()[-1]]]*steps
     
-    for (model_fit, exog, name_plot) in [\
-                                            #(model_booster_lastweek_fit, exog_booster, "model_booster_lastweek_fit"),\
+    for (model_fit, exog, name_plot, delai_dernier_jour) in [\
+                                            (model_booster_lastweek_fit, exog_booster, "model_booster_lastweek_fit", 7),\
                                             #(model_sans_exo_lastweek_fit, None, "model_sans_exo_lastweek_fit"),\
-                                            (model_booster_fit, exog_booster, "model_booster_fit"),\
+                                            (model_booster_fit, exog_booster, "model_booster_fit", 0),\
                                             #(model_sans_exo_fit, None, "model_sans_exo_fit"),\
                                         ]:
     
@@ -64,6 +65,6 @@ def forecast_and_plot():
         yhat_conf_int_75_0, yhat_conf_int_75_1, yhat_conf_int_75_2, yhat_conf_int_75_3 = yhat.summary_frame(endog=0, alpha=0.25), yhat.summary_frame(endog=1, alpha=0.25), yhat.summary_frame(endog=2, alpha=0.25), yhat.summary_frame(endog=3, alpha=0.25)
 
         # Plot
-        plot_and_export(df=df, df_dlog_all=df_dlog_all, yhat_mean=yhat_mean, yhat_conf_int_0=yhat_conf_int_0, yhat_conf_int_1=yhat_conf_int_1, yhat_conf_int_2=yhat_conf_int_2, yhat_conf_int_3=yhat_conf_int_3, yhat_conf_int_75_0=yhat_conf_int_75_0, yhat_conf_int_75_1=yhat_conf_int_75_1, yhat_conf_int_75_2=yhat_conf_int_75_2, yhat_conf_int_75_3=yhat_conf_int_75_3, name_fig=name_plot)
+        plot_and_export(df=df, df_dlog_all=df_dlog_all, yhat_mean=yhat_mean, yhat_conf_int_0=yhat_conf_int_0, yhat_conf_int_1=yhat_conf_int_1, yhat_conf_int_2=yhat_conf_int_2, yhat_conf_int_3=yhat_conf_int_3, yhat_conf_int_75_0=yhat_conf_int_75_0, yhat_conf_int_75_1=yhat_conf_int_75_1, yhat_conf_int_75_2=yhat_conf_int_75_2, yhat_conf_int_75_3=yhat_conf_int_75_3, name_fig=name_plot, delai_dernier_jour=delai_dernier_jour)
 
 forecast_and_plot()
