@@ -66,5 +66,6 @@ def forecast_and_plot():
 
         # Plot
         plot_and_export(df=df, df_dlog_all=df_dlog_all, yhat_mean=yhat_mean, yhat_conf_int_0=yhat_conf_int_0, yhat_conf_int_1=yhat_conf_int_1, yhat_conf_int_2=yhat_conf_int_2, yhat_conf_int_3=yhat_conf_int_3, yhat_conf_int_75_0=yhat_conf_int_75_0, yhat_conf_int_75_1=yhat_conf_int_75_1, yhat_conf_int_75_2=yhat_conf_int_75_2, yhat_conf_int_75_3=yhat_conf_int_75_3, name_fig=name_plot, delai_dernier_jour=delai_dernier_jour)
+        plot_and_export(df=df, df_dlog_all=df_dlog_all, yhat_mean=yhat_mean, yhat_conf_int_0=yhat_conf_int_0, yhat_conf_int_1=yhat_conf_int_1, yhat_conf_int_2=yhat_conf_int_2, yhat_conf_int_3=yhat_conf_int_3, yhat_conf_int_75_0=yhat_conf_int_75_0, yhat_conf_int_75_1=yhat_conf_int_75_1, yhat_conf_int_75_2=yhat_conf_int_75_2, yhat_conf_int_75_3=yhat_conf_int_75_3, name_fig=name_plot+"_tout", delai_dernier_jour=delai_dernier_jour, tout=True)
 
 forecast_and_plot()

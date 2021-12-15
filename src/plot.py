@@ -3,7 +3,7 @@ from plotly import graph_objects as go
 from plotly import offline
 import numpy as np
 
-def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat_conf_int_1=None, yhat_conf_int_2=None, yhat_conf_int_3=None, yhat_conf_int_75_0=None, yhat_conf_int_75_1=None, yhat_conf_int_75_2=None, yhat_conf_int_75_3=None, name_fig="model_output", delai_dernier_jour=0):
+def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=None, yhat_conf_int_1=None, yhat_conf_int_2=None, yhat_conf_int_3=None, yhat_conf_int_75_0=None, yhat_conf_int_75_1=None, yhat_conf_int_75_2=None, yhat_conf_int_75_3=None, name_fig="model_output", delai_dernier_jour=0, tout=False):
     fig = make_subplots(rows=4, 
                         cols=1, 
                         vertical_spacing = 0.1,
@@ -352,7 +352,9 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
         col=1
     )
 
-    fig.update_xaxes(range=[df_dlog_all.index[-80], yhat_mean.index[-1]])
+    if not tout:
+        fig.update_xaxes(range=[df_dlog_all.index[-80], yhat_mean.index[-1]])
+
     fig.update_yaxes(autorange = True)
 
     fig.add_annotation(
@@ -381,15 +383,15 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
         xref="paper",
         yref="paper",
         font=dict(size = 15),
-        text=f"Auteurs : @paldama, @GuillaumeRozier.<br>Données : Santé publique France, Ministère de la Santé.<br>Dernière donnée : {df_dlog_all.index.max().strftime(format='%d-%m')} • Dernière projection : {yhat_mean.index.max().strftime(format='%d-%m')}",
+        text=f"Auteurs : @paldama, @GuillaumeRozier.<br>Données : Santé publique France, Ministère de la Santé.<br>Dernière donnée : {df_dlog_all.index.max().strftime(format='%d/%m')} • Dernière projection : {yhat_mean.index.max().strftime(format='%d/%m')}",
         showarrow=False   
     )
 
     fig.update_layout(
-        xaxis=dict(nticks=25),
-        xaxis2=dict(nticks=25),
-        xaxis3=dict(nticks=25),
-        xaxis4=dict(nticks=25),
+        xaxis=dict(nticks=40),
+        xaxis2=dict(nticks=40),
+        xaxis3=dict(nticks=40),
+        xaxis4=dict(nticks=40),
 
         yaxis=dict(
             side="right",
