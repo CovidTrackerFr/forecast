@@ -377,11 +377,11 @@ def plot_and_export(df=None, df_dlog_all=None, yhat_mean=None, yhat_conf_int_0=N
 
     fig.add_annotation(
         x=0.5,
-        y=1.1,
+        y=1.11,
         xref="paper",
         yref="paper",
         font=dict(size = 15),
-        text=f"Auteurs : @paldama, @GuillaumeRozier.<br>Données : Santé publique France, Ministère de la Santé.<br>Dernière donnée : {df_dlog_all.index.max()} • Dernière projection : {yhat_mean.index.max()}",
+        text=f"Auteurs : @paldama, @GuillaumeRozier.<br>Données : Santé publique France, Ministère de la Santé.<br>Dernière donnée : {df_dlog_all.index.max().strftime(format='%d-%m')} • Dernière projection : {yhat_mean.index.max().strftime(format='%d-%m')}",
         showarrow=False   
     )
 
