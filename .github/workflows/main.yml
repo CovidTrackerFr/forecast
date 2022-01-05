@@ -3,7 +3,7 @@ name: Python Script
 # Controls when the action will run. 
 on:
   schedule:
-  - cron: "15 20 * * *" #
+  - cron: "15 19 * * *" #
 
 
   # Allows you to run this workflow manually from the Actions tab
